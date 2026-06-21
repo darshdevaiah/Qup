@@ -20,7 +20,7 @@ function isLocalDevHost(hostname: string): boolean {
   );
 }
 
-/** Reads optional LAN override from NEXT_PUBLIC_SHARE_ORIGIN (local dev only). */
+/** Reads optional LAN override from NEXT_PUBLIC_SHARE_ORIGIN (localhost dev only). */
 export function getConfiguredShareOrigin(): string | null {
   const raw = process.env.NEXT_PUBLIC_SHARE_ORIGIN?.trim();
   if (!raw) return null;
@@ -28,37 +28,32 @@ export function getConfiguredShareOrigin(): string | null {
 }
 
 /**
- * Resolves the origin used for share links.
+ * Resolves the origin used for share links (client only).
  *
- * - Production / Vercel: always `window.location.origin`
- * - Dev on LAN IP (phone): `window.location.origin`
- * - Dev on localhost: `NEXT_PUBLIC_SHARE_ORIGIN` → `window.location.origin`
+ * - Deployed domain / LAN dev: `window.location.origin`
+ * - localhost dev: `NEXT_PUBLIC_SHARE_ORIGIN` → `window.location.origin`
  */
 export function resolveShareOrigin(): string {
   if (typeof window === "undefined") {
-    return getConfiguredShareOrigin() ?? "";
+    return "";
   }
 
   const { origin, hostname } = window.location;
 
-  if (process.env.NODE_ENV === "production") {
-    return origin;
+  if (isLocalDevHost(hostname)) {
+    return getConfiguredShareOrigin() ?? origin;
   }
 
-  if (!isLocalDevHost(hostname)) {
-    return origin;
-  }
-
-  return getConfiguredShareOrigin() ?? origin;
+  return origin;
 }
 
-/** Builds a room URL for copy, share, and QR. */
-export function getRoomShareUrl(roomId: string): string {
+/** Builds `https://<current-domain>/room/<CODE>` for copy, share, and QR. */
+export function getRoomShareUrl(roomCode: string): string {
   const origin = resolveShareOrigin();
-  if (!origin || !roomId.trim()) return "";
+  const code = roomCode.trim().toUpperCase();
+  if (!origin || !code) return "";
 
-  const code = encodeURIComponent(roomId.trim().toUpperCase());
-  return `${origin.replace(/\/$/, "")}/room/${code}`;
+  return `${origin.replace(/\/$/, "")}/room/${encodeURIComponent(code)}`;
 }
 
 export function getRoomShareCode(roomId: string, roomCode?: string): string {

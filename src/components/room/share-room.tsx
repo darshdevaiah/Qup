@@ -51,7 +51,7 @@ export function ShareRoom({
   }, [code, showToast]);
 
   const handleCopyLink = useCallback(async () => {
-    const url = getRoomShareUrl(roomId);
+    const url = getRoomShareUrl(code);
     if (!url) return;
 
     try {
@@ -60,10 +60,10 @@ export function ShareRoom({
     } catch {
       showToast("Could not copy link", "error");
     }
-  }, [roomId, showToast]);
+  }, [code, showToast]);
 
   const handleShareRoom = useCallback(async () => {
-    const url = getRoomShareUrl(roomId);
+    const url = getRoomShareUrl(code);
     if (!url) return;
 
     try {
@@ -83,16 +83,16 @@ export function ShareRoom({
       }
       showToast("Could not share room", "error");
     }
-  }, [roomId, roomName, showToast]);
+  }, [code, roomName, showToast]);
 
   const handleShowQr = useCallback(() => {
-    const url = getRoomShareUrl(roomId);
+    const url = getRoomShareUrl(code);
     if (!url) {
       showToast("Could not build share link", "error");
       return;
     }
     setIsQrOpen(true);
-  }, [roomId, showToast]);
+  }, [code, showToast]);
 
   const actions: ShareAction[] = [
     { id: "copy-code", label: "Copy Code", onPress: handleCopyCode },

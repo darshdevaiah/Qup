@@ -1,7 +1,7 @@
 "use client";
 
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
-import { useEffect, useMemo } from "react";
+import { useEffect, useState } from "react";
 import QRCode from "react-qr-code";
 
 import { CloseIcon } from "@/components/room/icons";
@@ -35,11 +35,15 @@ export function RoomQrModal({
 }: RoomQrModalProps) {
   const reduceMotion = useReducedMotion();
   const { showToast } = useToast();
+  const [shareUrl, setShareUrl] = useState("");
 
-  const shareUrl = useMemo(
-    () => (isOpen ? getRoomShareUrl(roomId) : ""),
-    [isOpen, roomId],
-  );
+  useEffect(() => {
+    if (!isOpen) {
+      setShareUrl("");
+      return;
+    }
+    setShareUrl(getRoomShareUrl(roomCode));
+  }, [isOpen, roomCode]);
 
   const panelTransition = reduceMotion ? fadeSmooth : springPremium;
   const backdropTransition = reduceMotion
@@ -60,7 +64,7 @@ export function RoomQrModal({
   }, [isOpen, onClose]);
 
   async function handleCopyLink() {
-    const url = getRoomShareUrl(roomId);
+    const url = getRoomShareUrl(roomCode);
     if (!url) return;
 
     try {
