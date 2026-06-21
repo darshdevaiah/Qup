@@ -302,7 +302,7 @@ export function QueueList({
       </AnimatePresence>
 
       <AnimatePresence mode="popLayout" initial={false}>
-        {showBattleOverlay ? (
+        {showBattleOverlay && battleSession.contenders ? (
           <motion.li
             key="battle-overlay"
             layout

@@ -63,15 +63,25 @@ function encodeBasicAuth(clientId: string, clientSecret: string): string {
 
 async function readSpotifyError(response: Response): Promise<string> {
   try {
-    const body = (await response.json()) as SpotifyApiError & SpotifyTokenResponse;
-    if (body.error && typeof body.error === "object" && body.error.message) {
-      return body.error.message;
-    }
-    if (body.error_description) {
-      return body.error_description;
-    }
-    if (typeof body.error === "string") {
-      return body.error;
+    const body: unknown = await response.json();
+    if (body && typeof body === "object") {
+      const record = body as Record<string, unknown>;
+      const error = record.error;
+
+      if (error && typeof error === "object" && "message" in error) {
+        const message = (error as { message?: unknown }).message;
+        if (typeof message === "string") {
+          return message;
+        }
+      }
+
+      if (typeof record.error_description === "string") {
+        return record.error_description;
+      }
+
+      if (typeof error === "string") {
+        return error;
+      }
     }
   } catch {
     // Response body was not JSON — fall through to status text.
@@ -123,8 +133,12 @@ export async function getSpotifyAccessToken(): Promise<string> {
   return tokenCache.accessToken;
 }
 
+type SpotifySearchTrack = NonNullable<
+  NonNullable<SpotifySearchResponse["tracks"]>["items"]
+>[number];
+
 export function mapSpotifyTrack(
-  item: NonNullable<NonNullable<SpotifySearchResponse["tracks"]>["items"]>[number],
+  item: NonNullable<SpotifySearchTrack>,
 ): SpotifyTrackResult {
   const albumArt =
     item.album?.images?.find((img) => img.width >= 64)?.url ??

@@ -8,7 +8,7 @@ import { SwipeToVotePill } from "@/components/room/swipe-to-vote-pill";
 import type { AmbientPalette } from "@/lib/ambient-palette";
 import { warmWhite } from "@/lib/ambient-palette";
 import { battleLayoutId } from "@/lib/battle-state";
-import { battleShimmerGradient } from "@/lib/queue-battle";
+import { battleShimmerBackground } from "@/lib/queue-battle";
 import { springPremium } from "@/lib/motion";
 import type { DerivedBattlePhase } from "@/lib/battle-state";
 import type { QueuedSong } from "@/types/firestore";
@@ -113,7 +113,7 @@ export function BattleCard({
             initial={{ x: "-60%", opacity: 0 }}
             animate={{ x: "130%", opacity: [0, 0.5, 0] }}
             transition={{ duration: 1.1, ease: [0.4, 0, 0.2, 1] }}
-            style={{ background: battleShimmerGradient(ambient) }}
+            style={{ background: battleShimmerBackground(ambient) }}
           />
         ) : null}
 

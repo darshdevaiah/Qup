@@ -1,6 +1,6 @@
 "use client";
 
-import { getDoc, onSnapshot } from "firebase/firestore";
+import { getDoc, onSnapshot, type DocumentSnapshot } from "firebase/firestore";
 import { AnimatePresence, LayoutGroup, motion } from "framer-motion";
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
@@ -207,7 +207,7 @@ export function RoomView({ roomId }: RoomViewProps) {
 
     function applyRoomFromFirestore(
       source: "onSnapshot" | "getDoc",
-      snapshot: Awaited<ReturnType<typeof getDoc>>,
+      snapshot: DocumentSnapshot<Room>,
     ) {
       if (loadTimedOut) return;
 

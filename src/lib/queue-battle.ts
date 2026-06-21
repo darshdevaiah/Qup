@@ -130,3 +130,8 @@ export function battleShimmerGradient(palette: AmbientPalette): string[] {
     `linear-gradient(105deg, transparent 38%, ${palette.shimmerMid} 50%, transparent 62%)`,
   ];
 }
+
+/** Comma-joined layers for CSS `background` on a static style prop. */
+export function battleShimmerBackground(palette: AmbientPalette): string {
+  return battleShimmerGradient(palette).join(", ");
+}

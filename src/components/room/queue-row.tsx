@@ -11,6 +11,7 @@ import {
   battleCardDepthShadow,
   battleDirectionalGlow,
   battleShimmerGradient,
+  battleShimmerBackground,
 } from "@/lib/queue-battle";
 import {
   queueGlowTransition,
@@ -195,7 +196,7 @@ export function QueueRow({
             initial={{ opacity: 0, x: "-55%" }}
             animate={{ opacity: [0, 0.42, 0], x: "125%" }}
             transition={{ duration: 1.05, ease: [0.4, 0, 0.2, 1] }}
-            style={{ background: battleShimmerGradient(ambient) }}
+            style={{ background: battleShimmerBackground(ambient) }}
           />
         ) : null}
 
