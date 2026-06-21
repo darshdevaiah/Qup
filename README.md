@@ -2,9 +2,11 @@ This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-
 
 ## Getting Started
 
-First, run the development server:
+Run commands from the **`qup-app`** directory (this folder contains `package.json`):
 
 ```bash
+cd qup-app
+npm install
 npm run dev
 # or
 yarn dev

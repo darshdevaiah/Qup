@@ -1,65 +1,125 @@
-import Image from "next/image";
+"use client";
+
+import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
+
+import { CreateRoomModal } from "@/components/create-room-modal";
+import { JoinRoomModal } from "@/components/join-room-modal";
+import { useToast } from "@/components/ui/toast";
+import { createRoom, validateRoomCode } from "@/lib/rooms";
+import { getVoterId } from "@/lib/voter-session";
 
 export default function Home() {
+  const router = useRouter();
+  const { showToast } = useToast();
+  const [voterId, setVoterId] = useState("");
+  const [isCreateOpen, setIsCreateOpen] = useState(false);
+  const [isJoinOpen, setIsJoinOpen] = useState(false);
+  const [isCreating, setIsCreating] = useState(false);
+  const [isJoining, setIsJoining] = useState(false);
+
+  useEffect(() => {
+    console.log("[Qup Home] client hydrated");
+    setVoterId(getVoterId());
+  }, []);
+
+  async function handleCreateRoom(roomName: string) {
+    if (isCreating) return;
+
+    const sessionId = voterId || getVoterId();
+    if (!sessionId) {
+      showToast("Could not start a session. Refresh and try again.", "error");
+      return;
+    }
+
+    setIsCreating(true);
+
+    try {
+      const { code } = await createRoom(roomName, sessionId);
+      showToast(`Room ${code} is live`, "success");
+      setIsCreateOpen(false);
+      router.push(`/room/${code}`);
+    } catch (error) {
+      showToast(
+        error instanceof Error
+          ? error.message
+          : "Could not create room. Try again.",
+        "error",
+      );
+    } finally {
+      setIsCreating(false);
+    }
+  }
+
+  async function handleJoinRoom(roomCode: string) {
+    if (isJoining) return;
+
+    setIsJoining(true);
+
+    try {
+      const { code } = await validateRoomCode(roomCode);
+      setIsJoinOpen(false);
+      router.push(`/room/${code}`);
+    } catch (error) {
+      showToast(
+        error instanceof Error
+          ? error.message
+          : "Could not join room. Try again.",
+        "error",
+      );
+    } finally {
+      setIsJoining(false);
+    }
+  }
+
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
-        </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
+    <>
+      <main className="flex min-h-screen flex-col items-center justify-center bg-black px-5 text-white">
+        <h1 className="text-6xl font-bold">Qup</h1>
+        <p className="mt-4 text-center text-gray-400">
+          Crowd-powered music for cafés and bars.
+        </p>
+
+        <div className="mt-8 flex w-full max-w-xs flex-col gap-3">
+          <button
+            type="button"
+            onClick={() => {
+              console.log("CREATE_CLICKED");
+              console.log("OPEN_CREATE_MODAL");
+              setIsCreateOpen(true);
+            }}
+            className="min-h-12 touch-manipulation rounded-full bg-white px-8 py-3.5 font-semibold text-black transition-all duration-200 hover:bg-gray-200 active:scale-[0.98]"
           >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
+            Create Room
+          </button>
+
+          <button
+            type="button"
+            onClick={() => {
+              console.log("JOIN_CLICKED");
+              console.log("OPEN_JOIN_MODAL");
+              setIsJoinOpen(true);
+            }}
+            className="min-h-12 touch-manipulation rounded-full border border-white/15 bg-white/[0.04] px-8 py-3.5 font-semibold text-white transition-all duration-200 hover:bg-white/[0.08] active:scale-[0.98]"
           >
-            Documentation
-          </a>
+            Join a Room
+          </button>
         </div>
       </main>
-    </div>
+
+      <CreateRoomModal
+        isOpen={isCreateOpen}
+        isCreating={isCreating}
+        onClose={() => setIsCreateOpen(false)}
+        onCreate={handleCreateRoom}
+      />
+
+      <JoinRoomModal
+        isOpen={isJoinOpen}
+        isJoining={isJoining}
+        onClose={() => setIsJoinOpen(false)}
+        onJoin={handleJoinRoom}
+      />
+    </>
   );
 }
