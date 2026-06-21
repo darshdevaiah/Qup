@@ -12,7 +12,15 @@ function normalizeOrigin(raw: string): string | null {
   }
 }
 
-/** Reads optional override from NEXT_PUBLIC_SHARE_ORIGIN. */
+function isLocalDevHost(hostname: string): boolean {
+  return (
+    hostname === "localhost" ||
+    hostname === "127.0.0.1" ||
+    hostname === "[::1]"
+  );
+}
+
+/** Reads optional LAN override from NEXT_PUBLIC_SHARE_ORIGIN (local dev only). */
 export function getConfiguredShareOrigin(): string | null {
   const raw = process.env.NEXT_PUBLIC_SHARE_ORIGIN?.trim();
   if (!raw) return null;
@@ -21,17 +29,27 @@ export function getConfiguredShareOrigin(): string | null {
 
 /**
  * Resolves the origin used for share links.
- * Priority: NEXT_PUBLIC_SHARE_ORIGIN → window.location.origin
+ *
+ * - Production / Vercel: always `window.location.origin`
+ * - Dev on LAN IP (phone): `window.location.origin`
+ * - Dev on localhost: `NEXT_PUBLIC_SHARE_ORIGIN` → `window.location.origin`
  */
 export function resolveShareOrigin(): string {
-  const configured = getConfiguredShareOrigin();
-  if (configured) return configured;
-
   if (typeof window === "undefined") {
-    return "";
+    return getConfiguredShareOrigin() ?? "";
   }
 
-  return window.location.origin;
+  const { origin, hostname } = window.location;
+
+  if (process.env.NODE_ENV === "production") {
+    return origin;
+  }
+
+  if (!isLocalDevHost(hostname)) {
+    return origin;
+  }
+
+  return getConfiguredShareOrigin() ?? origin;
 }
 
 /** Builds a room URL for copy, share, and QR. */
