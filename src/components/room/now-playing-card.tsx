@@ -117,6 +117,7 @@ export function NowPlayingCard({
                     <AlbumArt
                       src={song.albumArt}
                       alt={`${song.title} cover`}
+                      titleForLog={song.title}
                       size="lg"
                     />
                   ) : (

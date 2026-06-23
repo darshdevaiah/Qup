@@ -21,6 +21,7 @@ import {
 } from "@/lib/ambient-palette";
 import { fadeSmooth, springPremium } from "@/lib/motion";
 import { addSongToQueue, extractSpotifyTrackId, QueueLockedError } from "@/lib/rooms";
+import { logAlbumArtStage } from "@/lib/spotify/album-art";
 import { useToast } from "@/components/ui/toast";
 import type { NowPlayingSong, QueuedSong } from "@/types/firestore";
 import type { SpotifyTrackResult } from "@/types/spotify";
@@ -49,7 +50,7 @@ function toAddInput(track: AddableTrack, addedBy: string) {
       ? track.spotifyTrackId
       : extractSpotifyTrackId(spotifyUrl) ?? track.id;
 
-  return {
+  const input = {
     title: track.title,
     artist: track.artist,
     albumArt: track.albumArt ?? "",
@@ -60,6 +61,10 @@ function toAddInput(track: AddableTrack, addedBy: string) {
       ? { durationMs: track.durationMs }
       : {}),
   };
+
+  logAlbumArtStage("client.addSong", input.title, input.albumArt);
+
+  return input;
 }
 
 export function AddSongModal({
@@ -432,6 +437,7 @@ export function AddSongModal({
                               <AlbumArt
                                 src={track.albumArt ?? undefined}
                                 alt={`${track.title} cover`}
+                                titleForLog={track.title}
                                 size="xl"
                               />
                             </div>

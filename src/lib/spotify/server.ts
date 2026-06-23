@@ -1,5 +1,10 @@
 import type { SpotifyTrackResult } from "@/types/spotify";
 
+import {
+  logAlbumArtStage,
+  pickSpotifyAlbumArtUrl,
+} from "@/lib/spotify/album-art";
+
 type SpotifyTokenResponse = {
   access_token: string;
   token_type: string;
@@ -140,10 +145,16 @@ type SpotifySearchTrack = NonNullable<
 export function mapSpotifyTrack(
   item: NonNullable<SpotifySearchTrack>,
 ): SpotifyTrackResult {
-  const albumArt =
-    item.album?.images?.find((img) => img.width >= 64)?.url ??
-    item.album?.images?.[0]?.url ??
-    null;
+  const albumArt = pickSpotifyAlbumArtUrl(item.album?.images ?? null);
+
+  logAlbumArtStage("spotify.map", item.name, albumArt);
+
+  if (/sicko\s*mode/i.test(item.name)) {
+    console.log("[Qup AlbumArt] spotify.raw-images", {
+      title: item.name,
+      images: item.album?.images ?? [],
+    });
+  }
 
   return {
     id: item.id,
@@ -165,6 +176,7 @@ export async function searchSpotifyTracks(
     q: query.trim(),
     type: "track",
     limit: String(SEARCH_LIMIT),
+    market: "US",
   });
 
   const url = `https://api.spotify.com/v1/search?${params.toString()}`;

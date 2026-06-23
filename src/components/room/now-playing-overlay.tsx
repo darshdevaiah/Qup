@@ -3,6 +3,7 @@
 import { AnimatePresence, motion } from "framer-motion";
 import { useEffect } from "react";
 
+import { AlbumArt } from "@/components/room/album-art";
 import {
   NowPlayingAttribution,
   NowPlayingRoomContext,
@@ -170,18 +171,14 @@ function OverlayAlbumArt({
           boxShadow: `0 32px 72px rgba(0,0,0,0.62), 0 12px 28px rgba(0,0,0,0.4), 0 0 56px rgba(${ambient.glowRgb}, 0.18), 0 0 0 1px ${warmWhite(0.06)}`,
         }}
       >
-        {song.albumArt ? (
-          // eslint-disable-next-line @next/next/no-img-element
-          <img
-            src={song.albumArt}
+        <div className="aspect-square w-full">
+          <AlbumArt
+            src={song.albumArt || undefined}
             alt={`${song.title} album art`}
-            className="h-full w-full object-cover"
+            titleForLog={song.title}
+            size="fill"
           />
-        ) : (
-          <div className="flex aspect-square w-full items-center justify-center bg-zinc-800/90 text-zinc-500">
-            No artwork
-          </div>
-        )}
+        </div>
 
         <motion.div
           aria-hidden

@@ -262,6 +262,7 @@ export function QueueRow({
           <AlbumArt
             src={song.albumArt || undefined}
             alt={`${song.title} cover`}
+            titleForLog={song.title}
             size="sm"
           />
         </div>

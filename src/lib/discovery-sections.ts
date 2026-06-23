@@ -22,8 +22,7 @@ const FALLBACK_TRACKS: DiscoveryTrack[] = [
     id: "fallback-1",
     title: "SICKO MODE",
     artist: "Travis Scott",
-    albumArt:
-      "https://i.scdn.co/image/ab67616d0000b273006940f445b2cbaa10c457f0",
+    albumArt: "",
     spotifyUrl: "https://open.spotify.com/track/2xLMifQCjGrVQ5JAQYXcfm",
     spotifyTrackId: "2xLMifQCjGrVQ5JAQYXcfm",
   },
@@ -31,8 +30,7 @@ const FALLBACK_TRACKS: DiscoveryTrack[] = [
     id: "fallback-2",
     title: "Blinding Lights",
     artist: "The Weeknd",
-    albumArt:
-      "https://i.scdn.co/image/ab67616d0000b2738863bc11d6aa41b254c0d609",
+    albumArt: "",
     spotifyUrl: "https://open.spotify.com/track/0VjIjW4GlUZAMYd2vXMi3b",
     spotifyTrackId: "0VjIjW4GlUZAMYd2vXMi3b",
   },
@@ -40,8 +38,7 @@ const FALLBACK_TRACKS: DiscoveryTrack[] = [
     id: "fallback-3",
     title: "Levitating",
     artist: "Dua Lipa",
-    albumArt:
-      "https://i.scdn.co/image/ab67616d0000b273ef24c3fdbf1f67de09a422c0",
+    albumArt: "",
     spotifyUrl: "https://open.spotify.com/track/463CkQjx2Zk1yXoBuierJ9",
     spotifyTrackId: "463CkQjx2Zk1yXoBuierJ9",
   },
@@ -49,8 +46,7 @@ const FALLBACK_TRACKS: DiscoveryTrack[] = [
     id: "fallback-4",
     title: "As It Was",
     artist: "Harry Styles",
-    albumArt:
-      "https://i.scdn.co/image/ab67616d0000b273b46f74097655aa07a1f3c42a",
+    albumArt: "",
     spotifyUrl: "https://open.spotify.com/track/4LRPiHGyFHib96NpAt6ot9",
     spotifyTrackId: "4LRPiHGyFHib96NpAt6ot9",
   },
@@ -58,8 +54,7 @@ const FALLBACK_TRACKS: DiscoveryTrack[] = [
     id: "fallback-5",
     title: "Save Your Tears",
     artist: "The Weeknd",
-    albumArt:
-      "https://i.scdn.co/image/ab67616d0000b2738863bc11d6aa41b254c0d609",
+    albumArt: "",
     spotifyUrl: "https://open.spotify.com/track/5QO79kh1waicV47BqGRLbI",
     spotifyTrackId: "5QO79kh1waicV47BqGRLbI",
   },
@@ -67,8 +62,7 @@ const FALLBACK_TRACKS: DiscoveryTrack[] = [
     id: "fallback-6",
     title: "Good 4 U",
     artist: "Olivia Rodrigo",
-    albumArt:
-      "https://i.scdn.co/image/ab67616d0000b273a91c10b7c5a2b6e9e9e1e2e",
+    albumArt: "",
     spotifyUrl: "https://open.spotify.com/track/4ZtFanR9U6nd4OkOeE1nOR",
     spotifyTrackId: "4ZtFanR9U6nd4OkOeE1nOR",
   },

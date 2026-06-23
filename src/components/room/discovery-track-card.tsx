@@ -3,6 +3,7 @@
 import { motion } from "framer-motion";
 
 import { PlusIcon } from "@/components/room/icons";
+import { AlbumArt } from "@/components/room/album-art";
 import type { AmbientPalette } from "@/lib/ambient-palette";
 import { DEFAULT_PALETTE, warmWhite } from "@/lib/ambient-palette";
 import { springPremium } from "@/lib/motion";
@@ -40,21 +41,12 @@ export function DiscoveryTrackCard({
         className="relative aspect-square overflow-hidden rounded-2xl border bg-zinc-800/60 shadow-lg shadow-black/40 ring-1 ring-white/5 transition-[border-color,box-shadow] duration-700 ease-out group-hover:border-[color:var(--modal-border-hover)] group-hover:shadow-[var(--modal-shadow-hover)]"
         style={{ borderColor: warmWhite(0.1) }}
       >
-        {track.albumArt ? (
-          // eslint-disable-next-line @next/next/no-img-element
-          <img
-            src={track.albumArt}
-            alt=""
-            className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
-          />
-        ) : (
-          <div
-            className="flex h-full w-full items-center justify-center"
-            style={{ background: "var(--modal-placeholder-bg)" }}
-          >
-            <span className="text-2xl text-white/40">♪</span>
-          </div>
-        )}
+        <AlbumArt
+          src={track.albumArt || undefined}
+          alt={`${track.title} cover`}
+          titleForLog={track.title}
+          size="fill"
+        />
 
         <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/25 to-transparent" />
 

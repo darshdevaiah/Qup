@@ -19,6 +19,7 @@ import {
 } from "@/lib/battle-state";
 import { sortQueueByVotes } from "@/lib/queue";
 import { parseRoomHostSettings } from "@/lib/host-permissions";
+import { logAlbumArtStage } from "@/lib/spotify/album-art";
 import {
   COLLECTIONS,
   type AddSongResult,
@@ -238,6 +239,17 @@ export function normalizeQueuedSong(
   };
 }
 
+function normalizeQueuedSongWithLog(
+  raw: Record<string, unknown>,
+  index: number,
+): QueuedSong | null {
+  const song = normalizeQueuedSong(raw, index);
+  if (song) {
+    logAlbumArtStage("firestore.read.queue", song.title, song.albumArt);
+  }
+  return song;
+}
+
 /** Strips undefined values before any Firestore write. */
 export function sanitizeQueuedSongForFirestore(
   song: QueuedSong,
@@ -419,7 +431,7 @@ function parseQueuedSong(item: unknown, index: number): QueuedSong | null {
     return null;
   }
 
-  return normalizeQueuedSong(item as Record<string, unknown>, index);
+  return normalizeQueuedSongWithLog(item as Record<string, unknown>, index);
 }
 
 export function parseRoomData(data: Record<string, unknown>): Room {
@@ -449,6 +461,11 @@ export function parseRoomData(data: Record<string, unknown>): Room {
         ? { startedAt: raw.startedAt }
         : {}),
     };
+    logAlbumArtStage(
+      "firestore.read.nowPlaying",
+      nowPlaying.title,
+      nowPlaying.albumArt,
+    );
   }
 
   return {
@@ -726,7 +743,7 @@ function normalizeQueue(queue: QueuedSong[]): QueuedSong[] {
 }
 
 export function createQueuedSong(input: AddToQueueInput): QueuedSong {
-  return normalizeQueuedSong(
+  const song = normalizeQueuedSong(
     {
       id: generateId(),
       title: input.title,
@@ -741,6 +758,10 @@ export function createQueuedSong(input: AddToQueueInput): QueuedSong {
     },
     0,
   )!;
+
+  logAlbumArtStage("firestore.write.queue", song.title, song.albumArt);
+
+  return song;
 }
 
 /**

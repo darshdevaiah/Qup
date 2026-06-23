@@ -122,6 +122,7 @@ export function BattleCard({
             <AlbumArt
               src={song.albumArt || undefined}
               alt={`${song.title} cover`}
+              titleForLog={song.title}
               size="md"
             />
             <div className="min-w-0 flex-1 space-y-1">
